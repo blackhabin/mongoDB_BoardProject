@@ -8,21 +8,36 @@
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <title>글 상세보기</title>
 </head>
-<style>
-	h2 { text-align: center;}
-  table { width: 100%;}
-  textarea { width: 100%;}
- 	#outter {
-		display: block;
-		width: 30%;
-		margin: auto;
-	}
-</style>
+	<style>
+		h2 { 
+			text-align: center;}
+	  	table { 
+	  		width: 100%;}
+	  	textarea { 
+	  		width: 100%;}
+	 	#content {
+			display: block;
+			width: 30%;
+			margin: auto;
+		}
+		
+	    div.button-container {
+	        display: flex;
+	        justify-content: flex-start;
+	    }
+	    div.button-container button {
+	        margin-right: 5px;
+	    }
+	    .myButton {
+        	width: 80px;  /* 버튼의 너비 */
+        	height: 30px;  /* 버튼의 높이 */
+    	}
+	</style>
 	<body>
 	
 		<h2>게시판</h2>
 		<br><br><br>
-			<div id="outter">
+			<div id="content">
 				<table border="1">
 					<tr>
 						<td>
@@ -39,7 +54,11 @@
 					<tr>
 					    <td>첨부파일: 
 					        <c:if test="${not empty board.file}">
-					            <a href="/myapp/board/downloadFile?fileId=${board.file._id}">${board.file.filename}</a>
+					           <form id="fileDownloadForm" action="/downloadFile" method="GET">
+						        	<input type="text" name="filename" value="${board.file.filename}">
+						        	<button type="submit" id="btnFileDownload" name="fileId" data-no="${board.file._id}">다운로드</button>
+	   			        	   <!-- <a href="/downloadFile/${board.file._id}">${board.file.filename}</a> -->
+					           </form>
 							</c:if>
 					    </td>
 					</tr>
@@ -48,24 +67,18 @@
 					</tr>
 				</table>
 				
-				<style>
-				    div.button-container {
-				        display: flex;
-				        justify-content: flex-start;
-				    }
-				    div.button-container button {
-				        margin-right: 5px;
-				    }
-				</style>
+				
 				<div class="button-container">
-				    <button type="button" onclick="location.href='modify.do?no=${board.no}';">수정</button>
-				    <form action="/myapp/board/deletePost" method="POST" onsubmit="return confirm('정말 삭제하시겠습니까?');">
+				    <button type="button" class="modify-link myButton" data-no="${board.no}">수정</button>
+				    <form id="deleteForm" action="/deletePost" method="POST">
 				        <input type="hidden" name="no" value="${board.no}">
-				        <button type="submit">삭제</button>
+				        <button type="submit" class="myButton" id="btnDeletePost" data-no="${board.no}">삭제</button>
 				    </form>
-					<input type="button" value="작성글 목록" style="float: right;" onclick="location.href='list.do';"> 
+					<input type="button" value="작성글 목록" class="myButton" style="float: right;" id="btnBoardList"> 
 				</div>
 			</div>
 			
+			<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+			<script src="/resources/js/views/board/detail.js"></script>
 	</body>
 </html>

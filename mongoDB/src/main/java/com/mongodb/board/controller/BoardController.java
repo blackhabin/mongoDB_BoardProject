@@ -5,7 +5,10 @@ import java.net.URI;
 import java.nio.charset.StandardCharsets;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
+import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -35,6 +38,8 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
 
+import net.sf.json.JSONArray;
+import net.sf.json.JSONObject;
 import com.mongodb.board.dao.BoardDAO;
 import com.mongodb.board.service.BoardService;
 
@@ -53,13 +58,72 @@ public class BoardController {
 	 * @param model
 	 * @return "board/list";
 	 */
-	@RequestMapping("/board")
-	public String list(Model model) {
+	@RequestMapping("/")
+	public String index() {
 		
 		System.out.println("보드컨트롤러 리스트");
-		model.addAttribute("list", boardService.list());
-		return "board/list";
+		
+		return "index";
 	}
+	
+	
+	/**
+	 * 게시물 리스트, 검색창 호출 메서드
+	 * @param model
+	 * @return "board/list";
+	 */
+//	@RequestMapping("/board")
+//	public String list(Model model) {
+//		
+//		System.out.println("보드컨트롤러 리스트");
+//		model.addAttribute("list", boardService.list());
+//		return "board/list";
+//	}
+	
+	@RequestMapping("/board")
+	public String board() {
+	    return "board/list";
+	}
+	
+	@RequestMapping("/board/data")
+	@ResponseBody
+	public JSONObject list() {
+	    List<Map<String, Object>> list = boardService.list();
+	    JSONObject response = new JSONObject();
+	    response.put("total", 1); // 전체 페이지 수
+	    response.put("page", 1); // 현재 페이지 번호
+	    response.put("records", list.size()); // 전체 레코드 수
+	    System.out.println("보드리스트 컨트트");
+	    
+	    JSONArray rows = new JSONArray(); // jsonArray
+	    for (int i = 0; i < list.size(); i++) {
+	    	JSONObject row = new JSONObject();  // jasonObject
+	        row.put("id", i + 1); // 행의 ID
+	        Map<String, Object> item = list.get(i);
+
+	        row.put("no", item.get("no")); // 각 셀의 값
+	        row.put("title", item.get("title"));
+	        row.put("writer", item.get("writer"));
+	        row.put("content", item.get("content"));
+	        
+	        // 날짜 포맷팅
+	        Date writedate = (Date)item.get("writedate");
+	        LocalDateTime localDateTime = convertToLocalDateTimeViaInstant(writedate);
+	        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+	        String formattedDate = localDateTime.format(formatter);
+	        row.put("writedate", formattedDate);
+	        
+	        row.put("hit", item.get("hit"));
+
+			   
+	       
+	        rows.add(row);
+	    }
+	    response.put("rows", rows);
+	    return response;
+//	    return null;
+	}
+	
 	
 	
 	/**
@@ -70,14 +134,18 @@ public class BoardController {
 	 */
 	@RequestMapping("/detail.do")
 	public String detailPost(Model model,HttpServletRequest request) {
-	    HttpSession session = request.getSession();
-	    int no = Integer.parseInt(session.getAttribute("no").toString());
+	     
+		// 1. 세션으로 번호를 받는 방식
+		HttpSession session = request.getSession();
+	     int no = Integer.parseInt(session.getAttribute("no").toString());	    
+	    
 		Map<String, Object> board = boardService.detailPost(no);
 		
 		model.addAttribute("board", board);
 		System.out.println("보드컨트롤러 상세화면");
 		
 		return "board/detail";
+		
 	}
 	
 	
@@ -213,9 +281,15 @@ public class BoardController {
 	 */
 	@RequestMapping(value = "/setSessionNo", method = RequestMethod.POST)
 	public ResponseEntity<String> setSessionNo(HttpServletRequest request, @RequestBody Map<String, String> body) {
-	    HttpSession session = request.getSession();
-	    session.setAttribute("no", body.get("no"));
-	    System.out.println("세션 번호 받기");
+	    
+		// 1. 세션으로 저장해서 반환
+		HttpSession session = request.getSession();
+	    
+	    //session.setAttribute("no", body.get("no"));     2) 윈도우에서만 되는 코드(리눅스에서는 작동 x)
+	    
+	    String no = body.get("no");
+	    session.setAttribute("no", no);	    
+	    System.out.println("세션 번호 받기- 세션 ID: " + session.getId() + ", no: " + no);
 	    return new ResponseEntity<>("Success", HttpStatus.OK);
 	}
 	

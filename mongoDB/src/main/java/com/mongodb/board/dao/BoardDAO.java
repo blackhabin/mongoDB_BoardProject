@@ -192,13 +192,21 @@ public class BoardDAO {
 
 	        // 디렉토리에 파일 저장
 	        try {
-	        	// 파일 저장 경로 설정
-	            Path diretoryPath = 
-	            		Paths.get("C:\\file" + File.separator + filename);
+	            // 파일 저장 경로 설정
+	            Path directoryPath;
+	            String os = System.getProperty("os.name").toLowerCase();
+	            if (os.contains("win")) { // 윈도우인 경우
+	                directoryPath = Paths.get("C:" + File.separator + "file" + File.separator + filename);
+	            } else { // 리눅스인 경우
+	                directoryPath = Paths.get(File.separator + "home" + File.separator + "onestar0608" + File.separator + "file" + File.separator + filename);
+	            }
+	            
 
-	            // StandardCopyOption은 Java NIO의 파일 복사 동작을 정의하는 열거형(enum),
-	            // REPLACE_EXISTING: 이 옵션은 대상 위치에 이미 파일이 존재하는 경우, 해당 파일을 덮어쓰는 것을 허용함.
-	            Files.copy(file.getInputStream(), diretoryPath, StandardCopyOption.REPLACE_EXISTING);
+	            // 디렉토리가 없을 경우 새로운 위에 입력된 디렉토리를 생성하고, 없으면 무시
+	            Files.createDirectories(directoryPath.getParent());
+
+	            // 파일 복사
+	            Files.copy(file.getInputStream(), directoryPath, StandardCopyOption.REPLACE_EXISTING);
 	        } catch (Exception e) {
 	            e.printStackTrace();
 	            throw new IOException(filename  + " 다시 시도해주세요.", e);

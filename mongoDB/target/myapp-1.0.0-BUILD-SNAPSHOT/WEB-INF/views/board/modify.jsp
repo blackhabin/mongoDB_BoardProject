@@ -15,10 +15,10 @@
 		<h2 style="text-align: center;">글 수정</h2><br><br><br>
 		
 		<div style="width: 60%; margin: auto;">
-			<form action="/myapp/board/updatePost" method="post" enctype="multipart/form-data">
-				<table border="1" cellpadding="0" cellspacing="0">
+			<form action="/updatePost" method="post" enctype="multipart/form-data">
+				<input type="hidden" id="no" name="no" style="width: 40%;" placeholder="번호" value="${board.no }"/>
 					
-					<input type="hidden" id="no" name="no" style="width: 40%;" placeholder="번호" value="${board.no }"/>
+				<table border="1" cellpadding="0" cellspacing="0">
 					
 					<tr>
 						<td bgcolor="orange" width="70">제목</td>
@@ -38,8 +38,8 @@
 						<td align="left">
 							<input type="file" name="fileId" id="existFile" />
 							<c:if test="${not empty board.file}">
-								<a href="/myapp/board/downloadFile?fileId=${board.file._id}">${board.file.filename}</a>
-								<button type="button" class="btnDelete" data-file-id="${board.file._id}">파일 삭제</button>
+								<a href="/downloadFile?fileId=${board.file._id}">${board.file.filename}</a>
+								<button type="button" id="btnDelete" data-file-id="${board.file._id}">파일 삭제</button>
 							</c:if>
 							
 						</td>
@@ -54,55 +54,8 @@
 		</div>
 		
 
-	<script>
-	$(document).ready(function() {
-	    if($("#existFile").length !== 0) {
-	        if(!sessionStorage.getItem("reloaded")) {
-	            sessionStorage.setItem("reloaded", true);
-	            location.reload();
-	        } else {
-	            sessionStorage.removeItem("reloaded");
-	        }
-	    }
-	});
-	
-	function goModify(frm) {
-		var title = frm.title.value;
-		var writer = frm.writer.value;
-		var content = frm.content.value;
-		
-		if (title.trim() == ''){
-			alert("제목을 입력해주세요");
-			return false;
-		}
-		if (writer.trim() == ''){
-			alert("작성자를 입력해주세요");
-			return false;
-		}
-		if (content.trim() == ''){
-			alert("내용을 입력해주세요");
-			return false;
-		}
-		frm.submit();
-	}
-	
-	// 파일 삭제 버튼 클릭 이벤트 핸들러
-	$('.btnDelete').click(function() {
-		var fileId = $(this).data('file-id');
-		var no = $('#no').val();  // 'no' 값을 가져옵니다.
-		$.ajax({
-			url: '/myapp/board/deleteFile',
-			method: 'POST',
-			data: {fileId: fileId, no: no},
-			success: function(response) {
-				alert('파일이 성공적으로 삭제되었습니다.');
-				location.reload();  // 페이지 새로고침
-			},
-			error: function(error) {
-				alert('파일 삭제에 실패했습니다.');
-			}
-		});
-	});
-	</script>	
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
+	<script src="/resources/js/views/board/modify.js"></script>
+
 	</body>
 </html>

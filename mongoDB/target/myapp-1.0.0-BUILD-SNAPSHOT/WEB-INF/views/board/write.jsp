@@ -13,7 +13,8 @@
 	<body>
 		<h2 style="text-align: center;">글 작성</h2><br><br><br>
 		
-		<form action="/myapp/board/savePost" method="post" enctype="multipart/form-data">
+		<!-- form이 아예 없이 업로드 -->
+		<!--  <form action="/savePost" method="post" enctype="multipart/form-data">-->
 			<table border="1" cellpadding="0" cellspacing="0">
 				<tr>
 					<td bgcolor="orange" width="70">제목</td>
@@ -38,28 +39,8 @@
 					</td>
 				</tr>
 			</table>
-		</form>
+		<!--</form>  -->
 
-	<script>
-	function goWrite(frm) {
-		var title = frm.title.value;
-		var writer = frm.writer.value;
-		var content = frm.content.value;
-		
-		if (title.trim() == ''){
-			alert("제목을 입력해주세요");
-			return false;
-		}
-		if (writer.trim() == ''){
-			alert("작성자를 입력해주세요");
-			return false;
-		}
-		if (content.trim() == ''){
-			alert("내용을 입력해주세요");
-			return false;
-		}
-		frm.submit();
-	}
-	</script>	
+	<script src="/resources/js/views/board/write.js"></script>
 	</body>
 </html>

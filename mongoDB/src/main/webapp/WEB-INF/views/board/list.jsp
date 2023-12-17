@@ -21,50 +21,34 @@
 			margin: auto;
 		}
 		</style>
+		<link rel="stylesheet" href="/resources/css/views/common/jquery-ui.css" />
+		<link rel="stylesheet" href="/resources/css/views/common/ui.jqgrid.css" />
+
+		<script src="/resources/js/views/common/jquery.min.js"></script>
+		<script src="/resources/js/views/common/jquery-ui.min.js"></script>
+		<script src="/resources/js/views/common/grid.locale-kr.js"></script>
+		<script src="/resources/js/views/common/jquery.jqGrid.js"></script>
 	</head>
 	
-	<body>게시판 리스트
+	<body>
 		<div id="content">
-			<table border="1">
-				<thead>
-					<tr>
-						<th>번호</th>
-						<th width="50%">제목</th>
-						<th>작성자</th>
-						<th>내용</th>
-						<th>작성일</th>
-						<th>조회수</th>
-					</tr>
-				</thead>
-				<tbody>
-					<c:forEach items="${list}" var="item">
-						<tr>
-							<td>${item['no']}</td>
-							<td><a href='detail.do' class='post-link' data-no='${item.no }'>${item['title']}</a></td>
-							<!--<td><a href="#" onclick="loadPostDetail(${item['no']});">${item['title']}</a></td>  -->
-							
-							<td>${item['writer']}</td>
-							<td>${item['content']}</td>
-							<td><fmt:formatDate value="${item['writedate']}" pattern="yyyy-MM-dd"/></td>
-							<td>${item['hit']}</td>
-						</tr>
-					</c:forEach>
-				</tbody>
-			</table>
-			<input type="button" class="btn btn-outline-primary" value="글쓰기" name="btnWrite" id="btnWrite" style="float: right;">
+			<div class="grid-wrapper">
+				<table id="jqGrid"></table>
+				<div id="jqGridNavi"></div>
+			</div>
+			<input type="button" class="btn btn-outline-primary" value="글쓰기" name="btnWrite" id="btnWrite">
 		</div>
-		
+
 		<div class="input-group mb-3">
 	    	<span class="input-group-text">검색</span>
 	    	<div class="form-floating">
 	        	<input type="text" class="form-control" name="search" id="search" placeholder="검색" />
 	    	</div>
 	    	<input type="button" class="btn btn-outline-primary" name="btnSearch" value="검색" id="btnSearch" />
-	    	<!-- <input type="button" class="btn btn-outline-primary" value="엑셀 다운로드" onclick="location.href='/downloadExcel'"> -->
-			
+
 			<button type="button" class="btn btn-outline-primary" id="btnDownload">엑셀 다운로드</button>
-		
 		</div>
+
 		<div class="input-group mb-3" style="float: right;">
 			<form id="uploadForm" enctype="multipart/form-data">
 			  <input type="file" id="file" name="file" accept=".xlsx" required>
@@ -72,7 +56,7 @@
 			</form>
 		</div>
 	
-	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+	
 	<script src="/resources/js/views/board/list.js"></script>
 	
 	</body>

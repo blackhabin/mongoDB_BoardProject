@@ -1,8 +1,71 @@
 /**
  * list.js
  */
-
+var $jqGrid = $('#jqGrid');
 $(document).ready(function() {
+	console.log("list js 호출");
+	console.log($.fn.jqGrid);
+	$jqGrid.jqGrid({
+			url: '/board/data',
+			jsonReader: {
+		        root: 'rows'
+		    },
+			mtype: "GET",
+			datatype: "json",
+			page: 100,
+			pageable: true,
+			countable: true,
+			sortable: true,
+			domainId : "게시판 리스트",
+			colNames:['번호','제목','작성자','내용','작성일','조회수'],
+			colModel: [
+				{align:"center", name: 'no', key: true },
+				{align:"center", name: 'title'},
+				/* ondblClickRow  쓸거고 meat_manage.js 참조해서 만들어보자 */
+				{align:"center", name: 'writer'},
+				{align:"center", name: 'content'},
+				{align:"center", name: 'writedate'},
+				/* java 컨트롤러단에서 날짜 포매팅을 이용해서 사용한다 */
+				{align:"center", name: 'hit'}
+			],
+			pager: "#jqGridNavi",
+			caption: "게시판 리스트",
+			autowidth: true,
+			rownumbers: true,
+			rowNum: 15,
+			cellsubmit: 'clientArray',
+			rowClickFocus: false,
+			rowClickColor: 'default',
+			/* 상세화면 들어가기 */
+			ondblClickRow: function(rowid, iRow, iCol, e) {
+	            var cm = $(this).jqGrid('getGridParam', 'colModel');
+	            if (cm[iCol].name === 'title') { // 'title' 컬럼이 더블클릭된 경우
+	                $.ajax({
+	                    type: 'POST',
+	                    url: '/setSessionNo',
+	                    contentType: 'application/json',
+	                    data: JSON.stringify({
+	                        no: rowid
+	                    }),
+	                    success: function() {
+	                        $.get('detail.do', function(data) {
+	                            $('body').html(data);
+	                        });
+	                    }
+	                });
+	            }
+	        },
+			emptyrecords: '조회된 데이타가 없습니다.'
+	});
+	
+	$(window).bind('resize', function () {
+        var width = $(".grid-wrapper:visible").eq(0).width();
+        $('#jqGrid').setGridWidth(width);
+        });
+
+
+
+
 	
 	// 글 작성 호출 함수
     console.log("write 호출");
@@ -15,6 +78,7 @@ $(document).ready(function() {
     });
 	
 	// 상세화면 호출 함수
+	/*
     console.log("detail; 호출");
     $(document).on('click', '.post-link', function(e) {
         e.preventDefault();
@@ -33,6 +97,7 @@ $(document).ready(function() {
             }
         });
     });
+    */
 	
 	
 	// 검색 함수
