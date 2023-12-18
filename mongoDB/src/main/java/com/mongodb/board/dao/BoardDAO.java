@@ -172,7 +172,7 @@ public class BoardDAO {
 	            }
 	        }
 	    	
-	    	System.out.println("dao저장");
+	    	System.out.println("dao board 저장");
 	    	mongoTemplate.save(doc, "board");
 	    }
 	    

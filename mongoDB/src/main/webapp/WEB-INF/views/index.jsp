@@ -8,7 +8,10 @@
 	</head>
 		<body>
 			<h1>index.jsp</h1>
-			<input type="button" value="작성글 목록" style="float: right;" id="btnBoardList" name="btnBoardList">
+			<input type="button" value="게시판" style="float: right;" id="btnBoardList" name="btnBoardList">
+			
+			<input type="button" value="회원가입" style="float: right;" id="btnJoin" name="btnJoin">
+			<input type="button" value="로그인" style="float: right;" id="btnLogin" name="btnLogin">
 
 			<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
 <!-- 			<script src="/resources/js/views/home/index.js"></script> -->
