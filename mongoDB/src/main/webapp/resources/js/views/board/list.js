@@ -1,10 +1,20 @@
 /**
  * list.js
  */
+
+//  다른 js에서도 사용을 해야하기 때문에 dialog는 전역변수 선언함.
+var dialog;
+// 다른 js에서 사용하기 위해서 전역함수로 선언
+openDialog = function(url) { // board 객체의 메서드로 선언
+    board.dialog.load(url, function() {
+        board.dialog.dialog("open");
+    });
+}
+
+
 var $jqGrid = $('#jqGrid');
 $(document).ready(function() {
 	console.log("list js 호출");
-	console.log($.fn.jqGrid);
 	$jqGrid.jqGrid({
 			url: '/board/data',
 			jsonReader: {
@@ -39,17 +49,34 @@ $(document).ready(function() {
 			/* 상세화면 들어가기 */
 			ondblClickRow: function(rowid, iRow, iCol, e) {
 	            var cm = $(this).jqGrid('getGridParam', 'colModel');
-	            if (cm[iCol].name === 'title') { // 'title' 컬럼이 더블클릭된 경우
+				// 컬럼을 더블클릭한 경우
+	            if (cm[iCol].name === 'title' 
+					|| cm[iCol].name === 'no' 
+					|| cm[iCol].name === 'writer'
+					|| cm[iCol].name === 'content'
+					|| cm[iCol].name === 'writedate'
+					|| cm[iCol].name === 'hit') { 
 	                $.ajax({
-	                    type: 'POST',
-	                    url: '/setSessionNo',
+	                    type: 'POST',   
+						url: '/setSessionNo',
 	                    contentType: 'application/json',
 	                    data: JSON.stringify({
 	                        no: rowid
 	                    }),
 	                    success: function() {
 	                        $.get('detail.do', function(data) {
-	                            $('body').html(data);
+	                            /* $('body').html(data);*/
+								
+								/* popup 띄우기 window.open 방식
+								var url = "detail.do"
+								var name = "popup test";
+								var option = "width = 1200, height = 600, top = 100, left = 200, location = no"
+								window.open(url, name, option);
+								*/
+								
+								/* popup 띄우기 jquery dialog 방식 */
+								dialog.html(data); // Dialog 내용 변경
+			                    dialog.dialog("open");
 	                        });
 	                    }
 	                });
@@ -58,10 +85,26 @@ $(document).ready(function() {
 			emptyrecords: '조회된 데이타가 없습니다.'
 	});
 	
+	
+	/* dialog 함수 */
+    dialog = $('<div id="dialog-form"></div>').dialog({
+		appendTo: 'body',
+	    autoOpen: false,
+	    width: 1200,
+	    height: 600,
+		title: '상세보기',
+		// 모달 다이얼로그로 생성
+	    modal: true,
+	    close: function(e) {
+		 	$('body').load('board');
+			dialog.dialog("close");
+	    }
+	});
+	
 	$(window).bind('resize', function () {
         var width = $(".grid-wrapper:visible").eq(0).width();
         $('#jqGrid').setGridWidth(width);
-        });
+     });
 
 
 
@@ -229,6 +272,7 @@ $(document).ready(function() {
    
 });
 
+
 // 날짜 포맷팅을 위한 함수
 function formatDate(date) {
     var d = new Date(date),
@@ -243,5 +287,4 @@ function formatDate(date) {
 
     return [year, month, day].join('-');
 }
-
 

@@ -12,12 +12,12 @@
 		h2 { 
 			text-align: center;}
 	  	table { 
-	  		width: 100%;}
+	  		width: 600px;}
 	  	textarea { 
 	  		width: 100%;}
 	 	#content {
 			display: block;
-			width: 30%;
+			width: 40%;
 			margin: auto;
 		}
 		
@@ -34,8 +34,6 @@
     	}
 	</style>
 	<body>
-	
-		<h2>게시판</h2>
 		<br><br><br>
 			<div id="content">
 				<table border="1">
@@ -74,7 +72,7 @@
 				        <input type="hidden" name="no" value="${board.no}">
 				        <button type="submit" class="myButton" id="btnDeletePost" data-no="${board.no}">삭제</button>
 				    </form>
-					<input type="button" value="작성글 목록" class="myButton" style="float: right;" id="btnBoardList"> 
+					<input type="button" value="작성글 목록" class="myButton btn-outline-primary" style="float: right;" id="btnBoardList"> 
 				</div>
 			</div>
 			

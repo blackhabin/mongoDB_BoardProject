@@ -115,8 +115,6 @@ public class BoardController {
 	        
 	        row.put("hit", item.get("hit"));
 
-			   
-	       
 	        rows.add(row);
 	    }
 	    response.put("rows", rows);

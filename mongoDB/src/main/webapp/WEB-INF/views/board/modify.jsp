@@ -15,7 +15,7 @@
 		<h2 style="text-align: center;">글 수정</h2><br><br><br>
 		
 		<div style="width: 60%; margin: auto;">
-			<form action="/updatePost" method="post" enctype="multipart/form-data">
+			<form action="/updatePost" method="post" id="yourForm" enctype="multipart/form-data">
 				<input type="hidden" id="no" name="no" style="width: 40%;" placeholder="번호" value="${board.no }"/>
 					
 				<table border="1" cellpadding="0" cellspacing="0">
@@ -46,7 +46,7 @@
 					</tr>
 					<tr>
 						<td colspan="2" align="center">
-						<input id="subBtn" type="button" value="글 수정" style="float: right;" onclick="goModify(this.form)"/>
+						<input id="subBtn" id="modifyButton" type="button" value="글 수정" style="float: right;" onclick="goModify(this.form)"/>
 						</td>
 					</tr>
 				</table>
